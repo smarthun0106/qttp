@@ -118,7 +118,6 @@ class Coinbase(Forms):
         self.api = ccxt.coinbase()
         super().__init__(*args, **kwargs)
         self.account = self.api.private_get_accounts()
-        print(self.account)
 
 
 
