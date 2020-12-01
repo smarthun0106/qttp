@@ -1,6 +1,9 @@
 """ Upload Pip
 - python setup.py bdist_wheel
 - twine upload dist/qttp-0.3-py3-none-any.whl
+  Enter your username: wisebeggar
+  Enter your password: Luvfamily6592!
+
 """
 
 
@@ -10,7 +13,7 @@ setup(
     # 배포할 패키지의 이름을 적어줍니다. setup.py파일을 가지는 폴더 이름과 동일하게 합니다.
     name                = 'qttp',
     # 배포할 패키지의 버전을 적어줍니다. 첫 등록이므로 0.1 또는 0.0.1을 사용합니다.
-    version             = '0.54',
+    version             = '0.55',
     # 배포할 패키지에 대한 설명을 작성합니다.
     description         = 'quant trading tools packages',
     # 배포하는 사람의 이름을 작성합니다.
@@ -27,7 +30,7 @@ setup(
     # 등록하고자 하는 패키지를 적는 곳입니다.
     # 우리는 find_packages 라이브러리를 이용하기 때문에 아래와 같이 적어줍니다.
     # 만약 제외하고자 하는 파일이 있다면 exclude에 적어줍니다.
-    packages            = find_packages(include = ['tools']),
+    packages            = find_packages(exclude = []),
     # 패키지의 키워드를 적습니다.
     keywords            = ['pypi deploy'],
     # 해당 패키지를 사용하기 위해 필요한 파이썬 버전을 적습니다.
