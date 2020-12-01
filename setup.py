@@ -1,9 +1,6 @@
 """ Upload Pip
 - python setup.py bdist_wheel
 - twine upload dist/qttp-0.3-py3-none-any.whl
-  Enter your username: wisebeggar
-  Enter your password: Luvfamily6592!
-
 """
 
 
