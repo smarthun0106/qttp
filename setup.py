@@ -30,7 +30,7 @@ setup(
     # 등록하고자 하는 패키지를 적는 곳입니다.
     # 우리는 find_packages 라이브러리를 이용하기 때문에 아래와 같이 적어줍니다.
     # 만약 제외하고자 하는 파일이 있다면 exclude에 적어줍니다.
-    packages            = find_packages(exclude = []),
+    packages            = find_packages(include = ['tools']),
     # 패키지의 키워드를 적습니다.
     keywords            = ['pypi deploy'],
     # 해당 패키지를 사용하기 위해 필요한 파이썬 버전을 적습니다.
