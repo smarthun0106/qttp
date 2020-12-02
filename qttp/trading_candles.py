@@ -1,14 +1,15 @@
+from qttp.tools.date_interval import DateInterval
+from qttp.tools.date import HunDate
+from qttp.tools.time_span import time_span
+from qttp.tools.log import setup_custom_logger
+
+from datetime import datetime, timedelta
 import pandas as pd
 import requests
-from tools.date_interval import DateInterval
-from tools.date import HunDate
-from tools.time_span import time_span
-from datetime import datetime, timedelta
-
 import time
 import os
 
-from tools.log import setup_custom_logger
+
 logger = setup_custom_logger("Candles")
 
 hun_date = HunDate()
@@ -149,13 +150,3 @@ class DeribitCandle(Candles):
         df.index = df['date']
         df = df[['open', 'high', 'low', 'close', 'volume']]
         return df
-
-
-if __name__ == "__main__":
-    # upbit_currency = "BTC/KRW"
-    # deribit_currency = "BTC-PERPETUAL"
-    # upbit_candles = UpbitCandle("KRW-BTC").real_time_candle_days()
-    # print(upbit_candles)
-
-    candles = DeribitCandle("BTC-PERPETUAL").real_time_candle_days()
-    print(candles)

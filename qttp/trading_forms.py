@@ -51,7 +51,7 @@ class Forms:
         return self.df.iloc[-1, 1]
 
 
-class Deribit(Forms):
+class DeribitForm(Forms):
     def __init__(self, *args, **kwargs):
         self.api = ccxt.deribit()
         super().__init__(*args, **kwargs)
@@ -81,7 +81,7 @@ class Deribit(Forms):
         return self.account['result']['equity']
 
 
-class Upbit(Forms):
+class UpbitFrom(Forms):
     def __init__(self, *args, **kwargs):
         self.api = ccxt.upbit()
         super().__init__(*args, **kwargs)
