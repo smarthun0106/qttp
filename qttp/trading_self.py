@@ -1,25 +1,5 @@
-from qttp.tools.log import setup_custom_logger
+from qttp.tools.exception_handlers import exception_handler_01
 import ccxt
-
-logger = setup_custom_logger("Apis")
-
-def exception_handler(func):
-    def inner_function(*args, **kwargs):
-        try:
-            result = func(*args, **kwargs)
-            done_message = (
-                f"{args[0].api}, {args[0].market}, "
-                f"{func.__name__.upper()} Method Execute"
-            )
-            logger.info(done_message)
-            return result
-        except (ccxt.NetworkError, ccxt.InsufficientFunds, IndexError) as e:
-            error_message = (
-                        f"{args[0].api}, {args[0].market}, "
-                        f"{func.__name__.upper()}, {type(e).__name__}"
-                    )
-            logger.info(error_message)
-    return inner_function
 
 class Apis:
     def __init__(self, access, secret, market):
@@ -27,46 +7,46 @@ class Apis:
         self.api.secret = secret
         self.market = market
 
-    @exception_handler
+    @exception_handler_01
     def limit_buy(self, amount, price):
         buy = self.api.create_order(symbol=self.market, type="limit",
                                     side="buy", amount=amount, price=price)
         return buy
 
-    @exception_handler
+    @exception_handler_01
     def limit_sell(self, amount, price):
         sell = self.api.create_order(symbol=self.market, type="limit",
                                     side="sell", amount=amount, price=price)
         return sell
 
-    @exception_handler
+    @exception_handler_01
     def market_buy(self, amount, price=None):
         buy = self.api.create_order(symbol=self.market, type="market",
                                     side="buy", amount=amount, price=price)
         return buy
 
-    @exception_handler
+    @exception_handler_01
     def market_sell(self, amount, price=None):
         sell = self.api.create_order(symbol=self.market, type="market",
                                     side="sell", amount=amount, price=price)
         return sell
 
-    @exception_handler
+    @exception_handler_01
     def ask_price(self, num):
         market = self.__market_name_change()
         return self.api.fetchOrderBook(market)['asks'][0][num]
 
-    @exception_handler
+    @exception_handler_01
     def bid_price(self, num):
         market = self.__market_name_change()
         return self.api.fetchOrderBook(market)['bids'][0][num]
 
-    @exception_handler
+    @exception_handler_01
     def ask_prices(self):
         market = self.__market_name_change()
         return self.api.fetchOrderBook(market, limit=100)['asks']
 
-    @exception_handler
+    @exception_handler_01
     def bid_prices(self):
         market = self.__market_name_change()
         return self.api.fetchOrderBook(market, limit=100)['bids']
@@ -87,21 +67,21 @@ class DeribitApi(Apis):
         self.position = self.api.private_get_get_position(instrument_name)
         self.account = self.api.private_get_get_account_summary(currency)
 
-    @exception_handler
+    @exception_handler_01
     def cancel_all(self):
         self.api.cancel_all_orders()
 
-    @exception_handler
+    @exception_handler_01
     def avg_price(self):
         avg_price = self.position['result']['average_price']
         return avg_price
 
-    @exception_handler
+    @exception_handler_01
     def size(self):
         size = self.position['result']['size']
         return size
 
-    @exception_handler
+    @exception_handler_01
     def equity(self):
         return self.account['result']['equity']
 
@@ -111,19 +91,19 @@ class UpbitApi(Apis):
         super().__init__(*args, **kwargs)
         self.__account()
 
-    @exception_handler
+    @exception_handler_01
     def avg_price(self):
         return self.u_avg_price
 
-    @exception_handler
+    @exception_handler_01
     def size(self):
         return self.u_size
 
-    @exception_handler
+    @exception_handler_01
     def equity(self):
         return self.u_equity_total
 
-    @exception_handler
+    @exception_handler_01
     def cancel_all(self):
         order_ids = self.__order_ids()
         for order_id in order_ids:

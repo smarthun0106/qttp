@@ -24,7 +24,7 @@ def trading_self_deribit_test():
     # market_sell = trading.market_sell(amount=10)
     # print(market_sell)
     # trading.cancel_all()
-    # print(trading.ask_price(0))
+    print(trading.ask_price(0))
     # print(trading.bid_price(0))
     # print(trading.avg_price())
     # print(trading.size())
@@ -36,7 +36,7 @@ def trading_self_upbit_test():
     TAEHUN_UPBIT_SECRET_KEY = "ST4sIxEjaXx9Nhz3eUUEInIZWCY103WxkfipiyqR"
     access          = TAEHUN_UPBIT_ACCESS_KEY
     secret          = TAEHUN_UPBIT_SECRET_KEY
-    market          = "KRW-BSV"
+    market          = "KRW-BTC"
     trading = UpbitApi(access, secret, market)
     # buy = trading.limit_buy(amount=0.0001, price=19500000)
     # sell = trading.limit_sell(amount=0.0001, price=19500000)
@@ -48,8 +48,8 @@ def trading_self_upbit_test():
     # print(trading.avg_price())
     # print(trading.size())
     # print(trading.equity())
-    print(trading.ask_prices())
+    print(trading.ask_price(0))
 
 
-# trading_self_deribit_test()
-trading_self_upbit_test()
+trading_self_deribit_test()
+# trading_self_upbit_test()
