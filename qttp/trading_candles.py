@@ -9,7 +9,6 @@ import requests
 import time
 import os
 
-
 logger = setup_custom_logger("Candles")
 
 hun_date = HunDate()

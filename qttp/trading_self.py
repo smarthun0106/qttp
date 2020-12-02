@@ -105,7 +105,6 @@ class DeribitApi(Apis):
     def equity(self):
         return self.account['result']['equity']
 
-
 class UpbitApi(Apis):
     def __init__(self, *args, **kwargs):
         self.api = ccxt.upbit()
