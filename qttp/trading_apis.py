@@ -1,11 +1,13 @@
 from qttp.tools.exception_handlers import exception_handler_01
+
 import ccxt
 
 class Apis:
-    def __init__(self, access, secret, market):
+    def __init__(self, access, secret, market, log=True):
         self.api.apiKey = access
         self.api.secret = secret
         self.market = market
+        self.log = log
 
     @exception_handler_01
     def limit_buy(self, amount, price):
@@ -15,7 +17,8 @@ class Apis:
 
     @exception_handler_01
     def limit_sell(self, amount, price):
-        sell = self.api.create_order(symbol=self.market, type="limit",
+        market = self.__market_name_change()
+        sell = self.api.create_order(symbol=market, type="limit",
                                     side="sell", amount=amount, price=price)
         return sell
 
@@ -34,12 +37,13 @@ class Apis:
     @exception_handler_01
     def ask_price(self, num):
         market = self.__market_name_change()
-        return self.api.fetchOrderBook(market)['asks'][0][num]
+        ask_price = self.api.fetchOrderBook(market)['asks'][num][0]
+        return ask_price
 
     @exception_handler_01
     def bid_price(self, num):
         market = self.__market_name_change()
-        return self.api.fetchOrderBook(market)['bids'][0][num]
+        return self.api.fetchOrderBook(market)['bids'][num][0]
 
     @exception_handler_01
     def ask_prices(self):
@@ -50,6 +54,9 @@ class Apis:
     def bid_prices(self):
         market = self.__market_name_change()
         return self.api.fetchOrderBook(market, limit=100)['bids']
+
+    def exchange_name(self):
+        return self.api
 
     def __market_name_change(self):
         if self.market.startswith("KRW-"):
@@ -70,6 +77,7 @@ class DeribitApi(Apis):
     @exception_handler_01
     def cancel_all(self):
         self.api.cancel_all_orders()
+        return "Executed"
 
     @exception_handler_01
     def avg_price(self):
@@ -88,6 +96,7 @@ class DeribitApi(Apis):
 class UpbitApi(Apis):
     def __init__(self, *args, **kwargs):
         self.api = ccxt.upbit()
+        print(self.api)
         super().__init__(*args, **kwargs)
         self.__account()
 
@@ -108,6 +117,7 @@ class UpbitApi(Apis):
         order_ids = self.__order_ids()
         for order_id in order_ids:
             self.api.cancel_order(order_id)
+        return "Executed"
 
     def __order_ids(self):
         try:
@@ -139,6 +149,6 @@ class UpbitApi(Apis):
                 u_avg_price = equity["avg_buy_price"]
                 u_size = equity["balance"]
 
-        self.u_equity_total = u_equity_total
-        self.u_avg_price = u_avg_price
-        self.u_size = u_size
+        self.u_equity_total = float(u_equity_total)
+        self.u_avg_price = float(u_avg_price)
+        self.u_size = float(u_size)
