@@ -1,6 +1,6 @@
 """ Upload Pip
 - python setup.py bdist_wheel
-- twine upload dist/qttp-0.3-py3-none-any.whl
+- twine upload dist/qttp-0.0.1-py3-none-any.whl
 """
 
 
