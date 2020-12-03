@@ -11,7 +11,7 @@ setup(
 
     version             = '0.0.1 ',
 
-    description         = 'quant trading tools packages',
+    description         = 'Quant Trading Tools Packages',
 
     author              = 'Taehun Kim',
 
