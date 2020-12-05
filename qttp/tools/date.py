@@ -13,7 +13,7 @@ class HunDate:
         date = date.strftime('%Y-%m-%d')
         return date
 
-    def time(self):
+    def time_detail(self):
         date_time = self.now.strftime('%Y-%m-%d %H:%M:%S')
         return date_time
 
@@ -22,11 +22,24 @@ class HunDate:
         minus_day = minus_day.strftime('%Y-%m-%d')
         return minus_day
 
+    def minus_hour(self, hour):
+        minus_hour = self.now - timedelta(hours=hour)
+        minus_hour = minus_hour.strftime('%Y-%m-%d %H:00:00')
+        return minus_hour
+
     def now_timestamp(self, days=0):
         t = self.now - timedelta(days=days)
         return int(t.timestamp()*1000)
 
-    def get_timestamp(self, date):
+    def millisecond(self, date):
+        date = self.__get_date_for_timestamp(date)
+        return int(date.timestamp()*1000)
+
+    def seconds(self, date):
+        date = self.__get_date_for_timestamp(date)
+        return int(date.timestamp())
+
+    def __get_date_for_timestamp(self, date):
         try:
             date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
 
@@ -34,4 +47,4 @@ class HunDate:
             date = date + " 00:00:00"
             date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
 
-        return int(date.timestamp()*1000)
+        return date
