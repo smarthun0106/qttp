@@ -9,7 +9,7 @@ import requests
 import time
 import os
 
-pd.set_option('display.float_format', lambda x: '%.0f' % x)
+
 pd.set_option('mode.chained_assignment',  None) # turn off the warning
 
 logger = setup_custom_logger("Candles")
@@ -192,7 +192,7 @@ class BybitCandle(Candles):
     def __init__(self, market):
         self.market = market
         self.base_url = "https://api.bybit.com"
-
+        pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
     # def candle_60m_200(self):
     #     since = hun_date.seconds(hun_date.minus_hour(200))
@@ -254,6 +254,7 @@ class BybitCandle(Candles):
         df = pd.DataFrame(page.json()['result'])
         df = self.__preprocessing(df)
         return df
+
 
     def __preprocessing(self, df):
         df['open_time'] = pd.to_datetime(df['open_time'], unit='s')
