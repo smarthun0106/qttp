@@ -192,7 +192,7 @@ class BybitCandle(Candles):
     def __init__(self, market):
         self.market = market
         self.base_url = "https://api.bybit.com"
-        pd.set_option('display.float_format', lambda x: '%.2f' % x)
+        pd.set_option('display.float_format', lambda x: '%.4f' % x)
 
     # def candle_60m_200(self):
     #     since = hun_date.seconds(hun_date.minus_hour(200))
