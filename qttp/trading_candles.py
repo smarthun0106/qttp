@@ -32,40 +32,6 @@ class Candles:
         file_name = f'{exchange}_{market}_{start}_{end}_{span}_{base}.csv'
         return path + file_name
 
-    # def request_candle(self, exchange, unit, since):
-    #     url, path, params = self.__url_path_params(exchange, unit, since)
-    #     page = requests.get(url + path, params=params)
-    #     return page.json()
-    #
-    # def __url_path_params(self, exchange, unit, since):
-    #     if exchange == "upbit":
-    #         url = "https://api.upbit.com"
-    #         if unit == "1D":
-    #             path = "/v1/candles/minutes/days"
-    #         else:
-    #             path = "/v1/candles/minutes/" + unit
-    #         params = {
-    #
-    #         }
-    #
-    #     if exchange == "deribit":
-    #          url = "https://www.deribit.com"
-    #          path = "/api/v2/public/get_tradingview_chart_data"
-    #          params = {
-    #
-    #          }
-    #
-    #     if exchange == "bybit":
-    #          url = "https://api.bybit.com"
-    #          path = "/v2/public/kline/list"
-    #          params = {
-    #              "symbol" : self.market,
-    #              "interval" : unit,
-    #              "from" : since
-    #          }
-    #
-    #     return url, path, params
-
 
 class UpbitCandle(Candles):
     def __init__(self, market):
@@ -143,6 +109,7 @@ class DeribitCandle(Candles):
 
         try:
             result_df = pd.read_csv(save_file_name, index_col=0, parse_dates=True)
+            print(result_df.info())
 
         except FileNotFoundError:
             new_df = pd.DataFrame()
@@ -192,22 +159,6 @@ class BybitCandle(Candles):
     def __init__(self, market):
         self.market = market
         self.base_url = "https://api.bybit.com"
-        # pd.set_option('display.float_format', lambda x: '%.4f' % x)
-
-    # def candle_60m_200(self):
-    #     since = hun_date.seconds(hun_date.minus_hour(200))
-    #     print(since)
-    #     response = self.request_candle("bybit", 60, since)
-    #     print(response)
-    #
-    # def __preprocessing(self, df):
-    #     df['open_time'] = pd.to_datetime(df['open_time'], unit='s')
-    #     df['open_time'] = df['open_time'] + timedelta(hours=9)
-    #     df.rename(columns={"open_time": "date"}, inplace=True)
-    #     df.index = df['date']
-    #     df = df[['open', 'high', 'low', 'close', 'volume']]
-    #     df['volume'] = df['volume'].astype(float)
-    #     return df
 
     def candle_since(self, since, span='24h', base='9h'):
         self.today = hun_date.today_plus_1day()
@@ -216,7 +167,8 @@ class BybitCandle(Candles):
         save_file_name = super().save_file_name('bybit', since, span, base)
 
         try:
-            result_df = pd.read_csv(save_file_name, index_col=0, parse_dates=True)
+            result_df = pd.read_csv(save_file_name,
+                                    index_col=0, parse_dates=True)
 
         except FileNotFoundError:
             new_df = pd.DataFrame()
@@ -224,7 +176,6 @@ class BybitCandle(Candles):
                 time.sleep(0.5)
                 df = self.__request_form(60, to_date)
                 new_df = pd.concat([new_df, df])
-
                 logger.info(f"Getting Candles, {to_date} Done")
 
             result_df = time_span(new_df, span=span, base=base).iloc[1:, :]
@@ -255,12 +206,11 @@ class BybitCandle(Candles):
         df = self.__preprocessing(df)
         return df
 
-
     def __preprocessing(self, df):
         df['open_time'] = pd.to_datetime(df['open_time'], unit='s')
         df['open_time'] = df['open_time'] + timedelta(hours=9)
         df.rename(columns={"open_time": "date"}, inplace=True)
         df.index = df['date']
         df = df[['open', 'high', 'low', 'close', 'volume']]
-        df.loc[:, 'volume'] = df['volume'].astype(int)
+        df = df.astype(float)
         return df
