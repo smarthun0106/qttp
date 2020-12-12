@@ -12,8 +12,7 @@ class Forms:
         self.df              = df
 
         self.equity    = self.trading.equity()
-        # self.signal    = self.__signal()
-        self.signal    = 0
+        self.signal    = self.__signal()
 
     def a_01(self):
         # buy at ask market, sell at bid market with form_01
