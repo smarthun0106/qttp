@@ -126,4 +126,6 @@ dmypy.json
 __pycache__/
 .DS_Store
 candles/
-test_trading.py
+test_trading_apis.py
+test_trading_candles.py
+test_trading_forms.py

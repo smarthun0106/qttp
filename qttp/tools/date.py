@@ -17,17 +17,30 @@ class HunDate:
         date_time = self.now.strftime('%Y-%m-%d %H:%M:%S')
         return date_time
 
-    def minus_day(self, day):
+    def today_minus_day(self, day):
         minus_day = self.now - timedelta(days=day)
         minus_day = minus_day.strftime('%Y-%m-%d')
         return minus_day
+
+    def date_minus_day(self, date, day):
+        date = self.__get_date_for_timestamp(date)
+        minus_date = date - timedelta(days=day)
+        minus_date = minus_date.strftime('%Y-%m-%d')
+        return minus_date
+
+    def date_plus_day(self, date, day):
+        date = self.__get_date_for_timestamp(date)
+        plus_date = date + timedelta(days=day)
+        plus_date = plus_date.strftime('%Y-%m-%d')
+        return plus_date
+
 
     def minus_hour(self, hour):
         minus_hour = self.now - timedelta(hours=hour)
         minus_hour = minus_hour.strftime('%Y-%m-%d %H:00:00')
         return minus_hour
 
-    def now_timestamp(self, days=0):
+    def now_millisecond(self, days=0):
         t = self.now - timedelta(days=days)
         return int(t.timestamp()*1000)
 

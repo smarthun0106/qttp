@@ -12,24 +12,29 @@ class Forms:
         self.df              = df
 
         self.equity    = self.trading.equity()
-        self.signal    = self.__signal()
+        # self.signal    = self.__signal()
+        self.signal    = 0
 
     def a_01(self):
+        # buy at ask market, sell at bid market with form_01
         buy_price = self.trading.ask_price(10)
         sell_price = self.trading.bid_price(10)
         self.__form_01(buy_price, sell_price)
 
     def a_02(self):
+        # buy at ask market, sell at bid market with form_02
         buy_price = self.trading.ask_price(10)
         sell_price = self.trading.bid_price(10)
         self.__form_02(buy_price, sell_price)
 
     def a_03(self):
+        # buy at ask market, sell at bid market, set sub_limit with form_02
         buy_price = self.trading.ask_price(10)
         sell_price = self.trading.bid_price(10)
-        self.__form_02(buy_price, sell_price, sub_limit=0.88)
+        self.__form_02(buy_price, sell_price, sub_limit=0.92)
 
     def a_04(self):
+        # buy at bid limit, sell at ask limit with form_02
         buy_price = self.trading.bid_price(0)
         sell_price = self.trading.ask_price(0)
         self.__form_02(buy_price, sell_price)
@@ -53,7 +58,6 @@ class Forms:
             self.__buy_msg(buy_price, invest_amount)
 
     def __form_02(self, buy_price, sell_price, sub_limit=None):
-        self.trading.cancel_all()
         size = self.trading.size()
         signal = self.signal
 
@@ -66,6 +70,7 @@ class Forms:
                 # buy
                 invest_amount = self.invest_amount(buy_price)
                 self.trading.limit_buy(invest_amount, buy_price)
+
                 if sub_limit:
                     buy_price_02 = round(buy_price * sub_limit, -1)
                     self.trading.limit_buy(invest_amount, buy_price_02)
@@ -75,12 +80,11 @@ class Forms:
         else:
             if size > 0:
                 # Sell
+                self.trading.cancel_all()
                 self.trading.limit_sell(size, sell_price)
                 self.__sell_msg(sell_price, size)
 
         print("-" * 110)
-
-
 
     def __basic_msg(self):
         basic_msg = (
@@ -125,10 +129,24 @@ class Forms:
     def __open_price(self):
         return self.df.iloc[-1, 1]
 
+
+
 class DeribitForm(Forms):
     def __init__(self, *args, **kwargs):
         from qttp.trading_apis import DeribitApi
         self.exchange = DeribitApi
+        self.invest_amount = self.__invest_amount
+        super().__init__(*args, **kwargs)
+
+    def __invest_amount(self, price):
+        invest_amount = round(self.equity * self.ratio_to_invest, 4)
+        invest_amount = round(invest_amount * price, -1)
+        return invest_amount
+
+class BybitForm(Forms):
+    def __init__(self, *args, **kwargs):
+        from qttp.trading_apis import BybitApi
+        self.exchange = BybitApi
         self.invest_amount = self.__invest_amount
         super().__init__(*args, **kwargs)
 

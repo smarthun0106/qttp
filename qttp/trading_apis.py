@@ -11,7 +11,8 @@ class Apis:
 
     @exception_handler_01
     def limit_buy(self, amount, price):
-        buy = self.api.create_order(symbol=self.market, type="limit",
+        market = self.__market_name_change()
+        buy = self.api.create_order(symbol=market, type="limit",
                                     side="buy", amount=amount, price=price)
         return buy
 
@@ -24,13 +25,15 @@ class Apis:
 
     @exception_handler_01
     def market_buy(self, amount, price=None):
-        buy = self.api.create_order(symbol=self.market, type="market",
+        market = self.__market_name_change()
+        buy = self.api.create_order(symbol=market, type="market",
                                     side="buy", amount=amount, price=price)
         return buy
 
     @exception_handler_01
     def market_sell(self, amount, price=None):
-        sell = self.api.create_order(symbol=self.market, type="market",
+        market = self.__market_name_change()
+        sell = self.api.create_order(symbol=market, type="market",
                                     side="sell", amount=amount, price=price)
         return sell
 
@@ -55,15 +58,49 @@ class Apis:
         market = self.__market_name_change()
         return self.api.fetchOrderBook(market, limit=100)['bids']
 
+    @exception_handler_01
+    def cancel_all(self):
+        market = self.__market_name_change()
+        self.api.cancel_all_orders(market)
+        return "Executed"
+
     def exchange_name(self):
-        return self.api
+        return str(self.api)
 
     def __market_name_change(self):
-        if self.market.startswith("KRW-"):
+        if str(self.api) == "Upbit":
             market = self.market[-3:] + "/" + self.market[:3]
+
+        elif str(self.api) == "Bybit":
+            market = self.market[:3] + "/" + self.market[-3:]
+
         else:
             market = self.market
+
         return market
+
+class BybitApi(Apis):
+    def __init__(self, *args, **kwargs):
+        self.api = ccxt.bybit()
+        super().__init__(*args, **kwargs)
+
+        symbol = {"symbol": self.market}
+        self.position = self.api.private_get_position_list(symbol)
+        self.account = self.api.private_get_wallet_balance()
+
+    @exception_handler_01
+    def avg_price(self):
+        avg_price = self.position['result']['entry_price']
+        return avg_price
+
+    @exception_handler_01
+    def size(self):
+        size = self.position['result']['size']
+        return size
+
+    @exception_handler_01
+    def equity(self):
+        return self.account['result'][self.market[:3]]['equity']
 
 class DeribitApi(Apis):
     def __init__(self, *args, **kwargs):
@@ -73,11 +110,6 @@ class DeribitApi(Apis):
         currency = {'currency' : self.market[:3]}
         self.position = self.api.private_get_get_position(instrument_name)
         self.account = self.api.private_get_get_account_summary(currency)
-
-    @exception_handler_01
-    def cancel_all(self):
-        self.api.cancel_all_orders()
-        return "Executed"
 
     @exception_handler_01
     def avg_price(self):
@@ -96,7 +128,6 @@ class DeribitApi(Apis):
 class UpbitApi(Apis):
     def __init__(self, *args, **kwargs):
         self.api = ccxt.upbit()
-        print(self.api)
         super().__init__(*args, **kwargs)
         self.__account()
 
