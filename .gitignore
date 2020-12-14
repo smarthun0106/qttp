@@ -129,3 +129,4 @@ candles/
 test_trading_apis.py
 test_trading_candles.py
 test_trading_forms.py
+test/
