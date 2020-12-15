@@ -37,7 +37,6 @@ class Candles:
                 df = self.candles_1h(start_d, end_d)
                 new_df = pd.concat([new_df, df])
                 logger.info(f"Getting Upbit Candles, {start_d} ~ {end_d} Done")
-            new_df.to_csv('abc.csv')
             result_df = time_span(new_df, span=span, base=base)
             result_df = result_df.astype(float)
             result_df.to_csv(file_name, index=True)
