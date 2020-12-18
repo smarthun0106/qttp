@@ -183,3 +183,9 @@ class UpbitApi(Apis):
         self.u_equity_total = float(u_equity_total)
         self.u_avg_price = float(u_avg_price)
         self.u_size = float(u_size)
+
+class CoinoneApi(Apis):
+    def __init__(self, *args, **kwargs):
+        self.api = ccxt.coinone()
+        super().__init__(*args, **kwargs)
+        # print(self.api.fetch_balance())
