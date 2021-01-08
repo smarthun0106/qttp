@@ -36,14 +36,19 @@ class Candles:
                 time.sleep(0.5)
                 df = self.candles_1h(start_d, end_d)
                 new_df = pd.concat([new_df, df])
-                logger.info(f"Getting Upbit Candles, {start_d} ~ {end_d} Done")
+
+                log_text = (
+                    f"Getting {self.exchange} Candles, "
+                    f"{start_d} ~ {end_d} Done"
+                )
+                logger.info(log_text)
+            # new_df.to_csv(file_name, index=True)
             result_df = time_span(new_df, span=span, base=base)
             result_df = result_df.astype(float)
             result_df.to_csv(file_name, index=True)
 
         result_df = result_df[start:end]
         return result_df
-
 
     def candles_1h(self, start=None, end=None):
         url, path, params = self.__url_path_params("60", start, end, '1h')
@@ -140,7 +145,8 @@ class Candles:
     def __time_converter(self):
         pass
 
-    def __save_file_name(self, exchange, start, end, span, base):
+    def __save_file_name(self, exchange, start, end,
+                         span=None, base=None, option=None):
         exchange = exchange
         market   = self.market
         start    = start
@@ -152,7 +158,11 @@ class Candles:
         if not os.path.isdir(path):
             os.mkdir(path)
 
-        file_name = f'{exchange}_{market}_{start}_{end}_{span}_{base}.csv'
+        if option == "1hour":
+            file_name = f'{exchange}_{market}_{start}_{end}_1hour.csv'
+        else:
+            file_name = f'{exchange}_{market}_{start}_{end}_{span}_{base}.csv'
+
         return path + file_name
 
 class UpbitCandle(Candles):
