@@ -38,6 +38,12 @@ class Forms:
         sell_price = self.trading.ask_price(0)
         self.__form_02(buy_price, sell_price)
 
+    def a_05(self):
+        # buy at open price, sell at ask limit with form_02
+        buy_price = self.__open_price()
+        sell_price = self.trading.ask_price(0)
+        self.__form_02(buy_price, sell_price)
+
     def __form_01(self, buy_price, sell_price):
         self.trading.cancel_all()
         size = self.trading.size()
@@ -126,8 +132,7 @@ class Forms:
         return signal
 
     def __open_price(self):
-        return self.df.iloc[-1, 1]
-
+        return self.df.iloc[-1, 0]
 
 
 class DeribitForm(Forms):
