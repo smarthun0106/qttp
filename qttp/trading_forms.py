@@ -39,6 +39,12 @@ class Forms:
         self.__form_02(buy_price, sell_price)
 
     def a_05(self):
+        # buy at bid limit, sell at bid limit with form_02
+        buy_price = self.trading.bid_price(0)
+        sell_price = self.trading.bid_price(10)
+        self.__form_02(buy_price, sell_price)
+
+    def a_06(self):
         # buy at open price, sell at ask limit with form_02
         buy_price = self.__open_price()
         sell_price = self.trading.ask_price(0)
