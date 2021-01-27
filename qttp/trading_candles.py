@@ -25,7 +25,7 @@ class Candles:
         dates = DateInterval(down_start, down_end, count_limit)[0]
         start_dates = dates[0] ; end_dates = dates[1]
 
-        file_name = self.__save_file_name(self.exchange, start, end, span, base)
+        file_name = self.__save_file_name(self.exchange, start, end, option='1hour')
 
         try:
             result_df = pd.read_csv(file_name, index_col=0, parse_dates=True)
@@ -46,9 +46,11 @@ class Candles:
             except:
                 pass
 
+            new_df.to_csv(file_name, index=True)
             result_df = time_span(new_df, span=span, base=base)
-            result_df = result_df.astype(float)
-            result_df.to_csv(file_name, index=True)
+
+        result_df = time_span(result_df, span=span, base=base)
+        result_df = result_df.astype(float)
 
         result_df = result_df[start:end]
         return result_df
