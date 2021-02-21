@@ -91,7 +91,6 @@ class Forms:
         else:
             if size > 0:
                 # Sell
-                self.trading.cancel_all()
                 self.trading.limit_sell(size, sell_price)
                 self.__sell_msg(sell_price, size)
 
