@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 setup(
     name                = 'qttp',
 
-    version             = '0.2.3',
+    version             = '0.2.4',
 
     description         = 'Quant Trading Tools Packages',
 
