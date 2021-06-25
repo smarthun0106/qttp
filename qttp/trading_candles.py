@@ -77,12 +77,18 @@ class Candles:
         if self.exchange == "deribit":
             return 10000
 
+        if self.exchange == "binance":
+            return 1000
+
     def __dataframe_convert(self, page_json):
         if self.exchange == "upbit":
             return pd.DataFrame(page_json)
 
         if self.exchange == "bybit" or self.exchange == "deribit":
             return pd.DataFrame(page_json['result'])
+
+        if self.exchange == 'binance':
+            return pd.DataFrame(page_json)
 
     def __url_path_params(self, unit, start=None, end=None, option=None):
         # upbit
@@ -144,6 +150,26 @@ class Candles:
 
              if start:
                 params['from'] = hun_date.seconds(start)
+
+        # binance
+        if self.exchange == "binance":
+             url = "https://api.binance.com"
+             path = "/api/v3/klines"
+
+             if unit == "1D":
+                 unit = "1d"
+
+             if unit == '60':
+                 unit = '1h'
+
+             params = {
+                 "symbol" : self.market,
+                 "interval" : unit,
+             }
+
+             if start:
+                 params["startTime"] = hun_date.millisecond(start)
+                 params["limit"] = 1000
 
 
         return url, path, params
@@ -220,4 +246,26 @@ class DeribitCandle(Candles):
         df.index = df['date']
         df = df[['open', 'high', 'low', 'close', 'volume']]
         df = df.astype(float)
+        return df
+
+class BinanceCandle(Candles):
+    def __init__(self, market):
+        self.exchange = "binance"
+        self.market = market
+        self.preprocessing = self.__preprocessing
+
+    def __preprocessing(self, df):
+        columns = {
+            0 : 'date', 1 : 'open', 2 : 'high',
+            3 : 'low', 4 : 'close', 5 : 'volume'
+        }
+        df.rename(columns=columns, inplace=True)
+        df['date'] = pd.to_datetime(df['date'], unit='ms') + timedelta(hours=9)
+        df.index = df['date']
+        df['open'] = df['open'].astype(float, 0)
+        df['high'] = df['high'].astype(float, 0)
+        df['low'] = df['low'].astype(float, 0)
+        df['close'] = df['close'].astype(float, 0)
+        df['volume'] = df['volume'].astype(float, 0)
+        df = df[['open', 'high', 'low', 'close', 'volume']]
         return df
