@@ -9,6 +9,8 @@ import requests
 import time
 import os
 
+import json
+
 pd.set_option('mode.chained_assignment',  None) # turn off the warning
 
 logger = setup_custom_logger("Candles")
@@ -268,4 +270,27 @@ class BinanceCandle(Candles):
         df['close'] = df['close'].astype(float, 0)
         df['volume'] = df['volume'].astype(float, 0)
         df = df[['open', 'high', 'low', 'close', 'volume']]
+        return df
+
+class FearGreedIndex:
+    def __init__(self, url):
+        if url == 'alternative':
+            self.url = 'https://api.alternative.me'
+            self.path = '/fng/'
+
+    def request_data(self):
+        params = {
+            "limit": 4000,
+            "format": 'json',
+            "date_format" : 'kr'
+        }
+        response = requests.get(self.url + self.path, params=params).json()
+        df = pd.DataFrame(response['data'])
+
+        return self.__preprocessing(df)
+
+    def __preprocessing(self, df):
+        df.index = pd.to_datetime(df['timestamp'])
+        df.index.name = 'date'
+        df.drop(['timestamp', 'time_until_update'], axis=1, inplace=True)
         return df
