@@ -1,6 +1,7 @@
 """ Upload Pip
 - python setup.py bdist_wheel
-- twine upload dist/qttp-0.2.0-py3-none-any.whl
+- twine upload dist/qttp-0.2.3-py3-none-any.whl
+wisebeggar / Luvfami****
 """
 
 from setuptools import setup, find_packages
@@ -8,7 +9,7 @@ from setuptools import setup, find_packages
 setup(
     name                = 'qttp',
 
-    version             = '0.2.2',
+    version             = '0.2.3',
 
     description         = 'Quant Trading Tools Packages',
 
