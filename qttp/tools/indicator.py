@@ -36,7 +36,7 @@ def moving_average(df, ma_num):
 def disparity(df, ma_num):
     name = 'ma' + str(ma_num)
     df[name] = moving_average(df, ma_num)
-    df['disparity'] = df['close'] / df[name]
+    df[name + 'disparity'] = df['close'] / df[name]
     return df
 
 def rsi(df, feature, length):
