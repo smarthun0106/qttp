@@ -21,19 +21,19 @@ def shift_data(df, feature_names, days, type):
 def ratio_close_ma(df, ma):
     ma_name = 'ma' + str(ma)
     df[ma_name] = df['close'].rolling(ma).mean()
-    df.loc[:, 'close-'+ma_name] =round(df['close'] / df[ma_name], 4)
+    df.loc[:, 'close-'+ma_name] =round(1-df['close'] / df[ma_name], 2) * 100
     return df
 
 def ratio_close_ema(df, ema):
     ema_name = 'ema' + str(ema)
     df[ema_name] = df['close'].ewm(span=ema, min_periods=1, adjust=False,ignore_na=False).mean()
-    df.loc[:, 'close-'+ema_name] =round(df['close'] / df[ema_name], 4)
+    df.loc[:, 'close-'+ema_name] =round(1-df['close'] / df[ema_name], 2) * 100
     return df
 
 def ratio_volume_ma(df, ma):
     ma_name = 'vma' + str(ma)
     df[ma_name] = df['volume'].rolling(ma).mean()
-    df.loc[:, 'volume-'+ma_name] =round(df['volume'] / df[ma_name], 4)
+    df.loc[:, 'volume-'+ma_name] =round(1-df['volume'] / df[ma_name], 2) * 100
     return df
 
 def ratio_candle(df):
