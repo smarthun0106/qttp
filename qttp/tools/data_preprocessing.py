@@ -21,23 +21,27 @@ def shift_data(df, feature_names, days, type):
 def ratio_close_ma(df, ma):
     ma_name = 'ma' + str(ma)
     df[ma_name] = df['close'].rolling(ma).mean()
-    df.loc[:, 'close-'+ma_name] =round(1-df['close'] / df[ma_name], 2) * 100
+    df.loc[:, 'close-'+ma_name] =round(df['close'] / df[ma_name], 4)
     return df
 
 def ratio_close_ema(df, ema):
     ema_name = 'ema' + str(ema)
-    df[ema_name] = df['close'].ewm(span=ema, min_periods=1, adjust=False,ignore_na=False).mean()
-    df.loc[:, 'close-'+ema_name] =round(1-df['close'] / df[ema_name], 2) * 100
+    df[ema_name] = df['close'].ewm(span=ema, min_periods=1,
+                                   adjust=False,ignore_na=False).mean()
+    df.loc[:, 'close-'+ema_name] =round(df['close'] / df[ema_name], 4)
     return df
 
 def ratio_volume_ma(df, ma):
     ma_name = 'vma' + str(ma)
     df[ma_name] = df['volume'].rolling(ma).mean()
-    df.loc[:, 'volume-'+ma_name] =round(1-df['volume'] / df[ma_name], 2) * 100
+    df.loc[:, 'volume-'+ma_name] =round(df['volume'] / df[ma_name], 4)
     return df
 
 def ratio_candle(df):
-    df.loc[:, 'candle'] = round(df['close'] / df['open']-1, 2) * 100
+    df.loc[:, 'candle_ratio'] = round(df['close'] / df['open'], 4)
+    df.loc[df.candle_ratio > 1.0000, 'candle_shape'] = 1
+    df.loc[df.candle_ratio < 1.0000, 'candle_shape'] = 0
+    df.loc[df.candle_ratio == 1.0000, 'candle_shape'] = 1
     return df
 
 def find_features_startswith(df, name):
