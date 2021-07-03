@@ -19,7 +19,7 @@ hun_date = HunDate()
 
 class Candles:
     def candles_start_end(self, start, end, span='24h', base='9h'):
-        down_start = hun_date.date_minus_day(start, 3)
+        down_start = hun_date.date_minus_day(start, 5)
         down_end   = hun_date.date_plus_day(end, 10)
 
         count_limit = self.__count_limit()
