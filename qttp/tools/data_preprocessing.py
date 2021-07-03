@@ -37,7 +37,7 @@ def ratio_volume_ma(df, ma):
     return df
 
 def ratio_candle(df):
-    df.loc[:, 'candle'] = round(df['close'] / df['open'], 4)
+    df.loc[:, 'candle'] = round(df['close'] / df['open']-1, 2) * 100
     return df
 
 def find_features_startswith(df, name):

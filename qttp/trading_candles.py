@@ -19,7 +19,7 @@ hun_date = HunDate()
 
 class Candles:
     def candles_start_end(self, start, end, span='24h', base='9h'):
-        down_start = hun_date.date_minus_day(start, 1)
+        down_start = hun_date.date_minus_day(start, 3)
         down_end   = hun_date.date_plus_day(end, 10)
 
         count_limit = self.__count_limit()
@@ -37,6 +37,7 @@ class Candles:
                 new_df = pd.DataFrame()
                 for start_d, end_d in zip(start_dates, end_dates):
                     time.sleep(0.5)
+
                     df = self.candles_1h(start_d, end_d)
                     new_df = pd.concat([new_df, df])
 
@@ -45,6 +46,7 @@ class Candles:
                         f"{start_d} ~ {end_d} Done"
                     )
                     logger.info(log_text)
+
 
                 new_df.to_csv(file_name, index=True)
                 result_df = time_span(new_df, span=span, base=base)
