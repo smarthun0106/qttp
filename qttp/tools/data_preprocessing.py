@@ -74,10 +74,13 @@ def min_of(df, feature_name, feature_names):
     return df
 
 def time_splite(df):
-    df.loc[:, 'year'] = df['date'].dt.year
-    df.loc[:, 'month'] = df['date'].dt.month
-    df.loc[:, 'day'] = df['date'].dt.day
-    df.loc[:, 'hour'] = df['date'].dt.hour
-    df.loc[:, 'minute'] = df['date'].dt.minute
-    df.loc[:, 'second'] = df['date'].dt.second
+    df.loc[:, 'year'] = df.index.year
+    df.loc[:, 'month'] = df.index.month
+    df.loc[:, 'day'] = df.index.day
+    df.loc[:, 'hour'] = df.index.hour
+    df.loc[:, 'minute'] = df.index.minute
+    df.loc[:, 'second'] = df.index.second
+
+    df.loc[:, 'y+m'] = df['year'].astype(str) + '-' + df['month'].astype(str)
+    df.loc[:, 'y+m'] = pd.to_datetime(df['y+m'], errors='coerce')
     return df
