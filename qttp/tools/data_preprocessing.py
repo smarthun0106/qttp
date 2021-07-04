@@ -40,7 +40,9 @@ def ratio_volume_ma(df, ma):
     return df
 
 def ratio_candle(df):
-    df.loc[:, 'candle_ratio'] = round(df['close'] / df['open'], 4)
+    df.loc[:, 'close_open_ratio'] = round(df['close'] / df['open'], 4)
+    df.loc[:, 'close_high_ratio'] = round(df['low'] / df['open'], 4)
+    df.loc[:, 'close_low_ratio'] = round(df['low'] / df['open'], 4)
     df.loc[df.candle_ratio > 1.0000, 'candle_shape'] = 1
     df.loc[df.candle_ratio < 1.0000, 'candle_shape'] = 0
     df.loc[df.candle_ratio == 1.0000, 'candle_shape'] = 1
