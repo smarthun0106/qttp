@@ -21,7 +21,7 @@ setup(
 
     download_url        = 'https://github.com/smarthun0106/qttp/archive/master.zip',
 
-    install_requires    =  ['numpy', 'pandas', 'ccxt'],
+    install_requires    =  ['numpy', 'pandas', 'ccxt', 'dropbox'],
 
     packages            = find_packages(exclude = []),
 
