@@ -13,6 +13,7 @@ class Dropbox:
     def read_csv(self, path):
         downfile, f = self.dbx.files_download(path)
         df = pd.read_csv(f.raw, index_col=['date'])
+        df.index = pd.to_datetime(df.index)
         return df
 
     def create_file(self, path, dataframe):
