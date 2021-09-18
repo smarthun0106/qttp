@@ -295,4 +295,6 @@ class FearGreedIndex:
         df.index = pd.to_datetime(df['timestamp'])
         df.index.name = 'date'
         df.drop(['timestamp', 'time_until_update'], axis=1, inplace=True)
+        df['value'] = df['value'].astype(int)
+        df.index = df.index + timedelta(hours=9)
         return df

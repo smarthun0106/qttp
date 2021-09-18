@@ -44,9 +44,9 @@ def ratio_candle(df):
     df.loc[:, 'close_high_ratio'] = round(df['high'] / df['open'], 4)
     df.loc[:, 'close_low_ratio'] = round(df['low'] / df['open'], 4)
 
-    df.loc[df['close_open_ratio'] > 1.0000, 'candle_shape'] = 1
-    df.loc[df['close_open_ratio'] < 1.0000, 'candle_shape'] = 0
-    df.loc[df['close_open_ratio'] == 1.0000, 'candle_shape'] = 1
+    # df.loc[df['close_open_ratio'] > 1.0000, 'candle_shape'] = 1
+    # df.loc[df['close_open_ratio'] < 1.0000, 'candle_shape'] = 0
+    # df.loc[df['close_open_ratio'] == 1.0000, 'candle_shape'] = 1
     return df
 
 def find_features_startswith(df, name):
