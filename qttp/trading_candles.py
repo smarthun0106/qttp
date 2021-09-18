@@ -18,7 +18,7 @@ logger = setup_custom_logger("Candles")
 hun_date = HunDate()
 
 class Candles:
-    def candles_start_end(self, start, end, span='24h', base='9h'):
+    def candles_start_end(self, start, end, span='24h', base='9h', save=True):
         down_start = hun_date.date_minus_day(start, 5)
         down_end   = hun_date.date_plus_day(end, 10)
 
@@ -29,36 +29,60 @@ class Candles:
 
         file_name = self.__save_file_name(self.exchange, start, end, option='1hour')
 
-        try:
-            result_df = pd.read_csv(file_name, index_col=0, parse_dates=True)
-
-        except FileNotFoundError:
+        if save:
             try:
-                new_df = pd.DataFrame()
-                for start_d, end_d in zip(start_dates, end_dates):
-                    time.sleep(0.5)
+                result_df = pd.read_csv(file_name, index_col=0, parse_dates=True)
 
-                    df = self.candles_1h(start_d, end_d)
-                    new_df = pd.concat([new_df, df])
+            except FileNotFoundError:
+                try:
+                    new_df = pd.DataFrame()
+                    for start_d, end_d in zip(start_dates, end_dates):
+                        time.sleep(0.5)
 
-                    log_text = (
-                        f"Getting {self.exchange} Candles, "
-                        f"{start_d} ~ {end_d} Done"
-                    )
-                    logger.info(log_text)
+                        df = self.candles_1h(start_d, end_d)
+                        new_df = pd.concat([new_df, df])
+
+                        log_text = (
+                            f"Getting {self.exchange} Candles, "
+                            f"{start_d} ~ {end_d} Done"
+                        )
+                        logger.info(log_text)
 
 
-                new_df.to_csv(file_name, index=True)
-                result_df = time_span(new_df, span=span, base=base)
+                    new_df.to_csv(file_name, index=True)
+                    result_df = time_span(new_df, span=span, base=base)
 
-            except:
-                pass
+                except:
+                    pass
 
-        result_df = time_span(result_df, span=span, base=base)
-        result_df = result_df.astype(float)
+            result_df = time_span(result_df, span=span, base=base)
+            result_df = result_df.astype(float)
 
-        result_df = result_df[start:end]
-        return result_df
+            result_df = result_df[start:end]
+            return result_df
+
+        else:
+            new_df = pd.DataFrame()
+            for start_d, end_d in zip(start_dates, end_dates):
+                time.sleep(0.5)
+
+                df = self.candles_1h(start_d, end_d)
+                new_df = pd.concat([new_df, df])
+
+                log_text = (
+                    f"Getting {self.exchange} Candles, "
+                    f"{start_d} ~ {end_d} Done"
+                )
+                logger.info(log_text)
+
+
+            new_df.to_csv(file_name, index=True)
+            result_df = time_span(new_df, span=span, base=base)
+            result_df = result_df.astype(float)
+
+            result_df = result_df[start:end]
+            return result_df
+
 
     def candles_1h(self, start=None, end=None):
         url, path, params = self.__url_path_params("60", start, end, '1h')
