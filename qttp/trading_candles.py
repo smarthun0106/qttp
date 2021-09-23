@@ -75,8 +75,6 @@ class Candles:
                 )
                 logger.info(log_text)
 
-
-            new_df.to_csv(file_name, index=True)
             result_df = time_span(new_df, span=span, base=base)
             result_df = result_df.astype(float)
 
