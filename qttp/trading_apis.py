@@ -152,6 +152,10 @@ class UpbitApi(Apis):
         return self.krw_lock
 
     @exception_handler_01
+    def account_info(self):
+        return self.account
+
+    @exception_handler_01
     def cancel_all(self):
         order_ids = self.__order_ids()
         for order_id in order_ids:
@@ -191,6 +195,7 @@ class UpbitApi(Apis):
                 u_avg_price = equity["avg_buy_price"]
                 u_size = equity["balance"]
 
+        self.account = account
         self.krw_bal = krw_balance
         self.krw_lock = krw_locked
         self.u_equity_total = float(u_equity_total)
