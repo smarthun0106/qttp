@@ -17,6 +17,7 @@ def filter_spec(df, f, k1, k2, t_name1, t_name2, code=None, p=0):
     sb_list = zip(f, k1, k2)
     for feature, small, big in sb_list:
         l.append(df[feature].between(small, big, inclusive=False))
+
     # l.append(df['p'] >= p)
     df.loc[conjunction(*l), t_name1] = t_name2
     if code:

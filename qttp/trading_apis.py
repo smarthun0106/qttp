@@ -69,7 +69,7 @@ class Apis:
 
     def __market_name_change(self):
         if str(self.api) == "Upbit":
-            market = self.market[-3:] + "/" + self.market[:3]
+            market = self.market[4:] + "/" + self.market[:3]
 
         elif str(self.api) == "Bybit":
             market = self.market[:3] + "/" + self.market[-3:]
@@ -144,6 +144,14 @@ class UpbitApi(Apis):
         return self.u_equity_total
 
     @exception_handler_01
+    def krw_balance(self):
+        return self.krw_bal
+
+    @exception_handler_01
+    def krw_locked(self):
+        return self.krw_lock
+
+    @exception_handler_01
     def cancel_all(self):
         order_ids = self.__order_ids()
         for order_id in order_ids:
@@ -169,17 +177,22 @@ class UpbitApi(Apis):
 
         for equity in account:
             if equity['currency'] == 'KRW':
+                krw_balance = float(equity['balance'])
+                krw_locked = float(equity['locked'])
                 u_equity_total = u_equity_total + float(equity['locked'])
                 u_equity_total = u_equity_total + float(equity['balance'])
             else:
                 avg_buy = float(equity["avg_buy_price"])
                 balance = float(equity['balance'])
-                u_equity_total = u_equity_total + (avg_buy * balance)
+                locked = float(equity['locked'])
+                u_equity_total = u_equity_total + (avg_buy * balance) + (avg_buy * locked)
 
-            if equity['currency'] == self.market[-3:]:
+            if equity['currency'] == self.market[4:]:
                 u_avg_price = equity["avg_buy_price"]
                 u_size = equity["balance"]
 
+        self.krw_bal = krw_balance
+        self.krw_lock = krw_locked
         self.u_equity_total = float(u_equity_total)
         self.u_avg_price = float(u_avg_price)
         self.u_size = float(u_size)
