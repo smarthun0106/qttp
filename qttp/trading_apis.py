@@ -59,6 +59,10 @@ class Apis:
         return self.api.fetchOrderBook(market, limit=100)['bids']
 
     @exception_handler_01
+    def order_list(self):
+        return self.api.fetchOpenOrders()
+
+    @exception_handler_01
     def cancel_all(self):
         market = self.__market_name_change()
         self.api.cancel_all_orders(market)
