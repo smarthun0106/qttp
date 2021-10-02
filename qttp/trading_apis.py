@@ -10,6 +10,11 @@ class Apis:
         self.log = log
 
     @exception_handler_01
+    def tickers(self):
+        tickers = self.api.fetchTickers()
+        return tickers
+
+    @exception_handler_01
     def limit_buy(self, amount, price):
         market = self.__market_name_change()
         buy = self.api.create_order(symbol=market, type="limit",
@@ -165,6 +170,10 @@ class UpbitApi(Apis):
         for order_id in order_ids:
             self.api.cancel_order(order_id)
         return "Executed"
+
+    @exception_handler_01
+    def cancel_order(self, order_id):
+        self.api.cancel_order(order_id)
 
     def __order_ids(self):
         try:
