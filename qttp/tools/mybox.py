@@ -10,6 +10,11 @@ class Dropbox:
         files_name = [content.name for content in contents.entries]
         return files_name
 
+    def just_read_csv(self, path):
+        downfile, f = self.dbx.files_download(path)
+        df = pd.read_csv(f.raw)
+        return df
+
     def read_csv(self, path):
         downfile, f = self.dbx.files_download(path)
         df = pd.read_csv(f.raw, index_col=['date'])
