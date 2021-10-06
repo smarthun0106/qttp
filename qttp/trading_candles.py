@@ -21,20 +21,55 @@ class Candles:
     def candles_start_end(self, start, end, span='24h', base='9h', save=True):
         down_start = hun_date.date_minus_day(start, 5)
         down_end   = hun_date.date_plus_day(end, 10)
-
         count_limit = self.__count_limit()
+        day = 0
 
-        dates = DateInterval(down_start, down_end, count_limit)[0]
-        start_dates = dates[0] ; end_dates = dates[1]
-
-        file_name = self.__save_file_name(self.exchange, start, end, option='1hour')
-
-        if save:
+        while True:
             try:
-                result_df = pd.read_csv(file_name, index_col=0, parse_dates=True)
+                dates = DateInterval(down_start, down_end, count_limit)[0]
+                start_dates = dates[0] ; end_dates = dates[1]
 
-            except FileNotFoundError:
-                try:
+                file_name = self.__save_file_name(self.exchange,
+                                                  start, end, option='1hour')
+
+
+                if save:
+                    try:
+                        result_df = pd.read_csv(file_name, index_col=0,
+                                                parse_dates=True)
+
+                    except FileNotFoundError:
+                        try:
+                            new_df = pd.DataFrame()
+                            for start_d, end_d in zip(start_dates, end_dates):
+                                time.sleep(0.5)
+
+                                df = self.candles_1h(start_d, end_d)
+                                new_df = pd.concat([new_df, df])
+
+                                log_text = (
+                                    f"Getting {self.exchange} Candles, "
+                                    f"{start_d} ~ {end_d} Done"
+                                )
+                                logger.info(log_text)
+
+
+                            new_df.to_csv(file_name, index=True)
+                            result_df = time_span(new_df, span=span, base=base)
+
+                        except KeyboardInterrupt:
+                            break
+
+                        except :
+                            pass
+
+                    result_df = time_span(result_df, span=span, base=base)
+                    result_df = result_df.astype(float)
+
+                    result_df = result_df[start:end]
+                    return result_df
+
+                else:
                     new_df = pd.DataFrame()
                     for start_d, end_d in zip(start_dates, end_dates):
                         time.sleep(0.5)
@@ -48,45 +83,29 @@ class Candles:
                         )
                         logger.info(log_text)
 
-
-                    new_df.to_csv(file_name, index=True)
                     result_df = time_span(new_df, span=span, base=base)
+                    result_df = result_df.astype(float)
 
-                except:
-                    pass
+                    result_df = result_df[start:end]
+                    return result_df
 
-            result_df = time_span(result_df, span=span, base=base)
-            result_df = result_df.astype(float)
+                time.sleep(1)
 
-            result_df = result_df[start:end]
-            return result_df
+            except KeyboardInterrupt:
+                break
 
-        else:
-            new_df = pd.DataFrame()
-            for start_d, end_d in zip(start_dates, end_dates):
-                time.sleep(0.5)
-
-                df = self.candles_1h(start_d, end_d)
-                new_df = pd.concat([new_df, df])
-
-                log_text = (
-                    f"Getting {self.exchange} Candles, "
-                    f"{start_d} ~ {end_d} Done"
-                )
-                logger.info(log_text)
-
-            result_df = time_span(new_df, span=span, base=base)
-            result_df = result_df.astype(float)
-
-            result_df = result_df[start:end]
-            return result_df
-
+            except UnboundLocalError:
+                day = day + 5
+                down_start = hun_date.date_plus_day(start, day)
+                print(f'{down_start} Checking.....')
 
     def candles_1h(self, start=None, end=None):
         url, path, params = self.__url_path_params("60", start, end, '1h')
         page_json = requests.get(url + path, params=params).json()
         df = self.__dataframe_convert(page_json)
         df = self.preprocessing(df)
+
+
         return df
 
     def candles_24h(self):
