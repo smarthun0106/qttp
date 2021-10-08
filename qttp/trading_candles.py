@@ -115,6 +115,13 @@ class Candles:
         df = self.preprocessing(df)
         return df
 
+    def candles_15m(self):
+        url, path, params = self.__url_path_params("15")
+        page_json = requests.get(url + path, params=params).json()
+        df = self.__dataframe_convert(page_json)
+        df = self.preprocessing(df)
+        return df
+
     def __count_limit(self):
         if self.exchange == "upbit" or self.exchange == "bybit":
             return 200
