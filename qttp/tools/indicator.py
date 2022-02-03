@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import requests
+from datetime import datetime, timedelta
 
 def bollinger_bands(df, source, ma=20, k=2):
     f_name = 'ma' + str(ma)
@@ -52,9 +54,38 @@ def rsi(df, source, length):
     return df
 
 def fnMACD(m_Df, source, m_NumFast=12, m_NumSlow=26, m_NumSignal=9):
-    m_Df['EMAFast'] = m_Df[featrue].ewm(span=m_NumFast, min_periods=m_NumFast-1).mean()
-    m_Df['EMASlow'] = m_Df[featrue].ewm(span=m_NumSlow, min_periods=m_NumSlow-1).mean()
+    m_Df['EMAFast'] = m_Df[featrue].ewm(span=m_NumFast,
+                                        min_periods=m_NumFast-1).mean()
+    m_Df['EMASlow'] = m_Df[featrue].ewm(span=m_NumSlow,
+                                        min_periods=m_NumSlow-1).mean()
     m_Df['MACD'] = m_Df['EMAFast'] - m_Df['EMASlow']
-    m_Df['MACDSignal'] = m_Df['MACD'].ewm( span = m_NumSignal, min_periods = m_NumSignal-1).mean()
+    m_Df['MACDSignal'] = m_Df['MACD'].ewm(span=m_NumSignal,
+                                          min_periods=m_NumSignal-1).mean()
     m_Df['MACDDiff'] = m_Df['MACD'] - m_Df['MACDSignal']
     return m_Df
+
+def fear_greed_index():
+    url = 'https://api.alternative.me'
+    path = '/fng/'
+
+    params = {
+        "limit": 4000,
+        "format": 'json',
+        "date_format" : 'kr'
+    }
+    response = requests.get(url + path, params=params).json()
+    df = pd.DataFrame(response['data'])
+
+    df.index = pd.to_datetime(df['timestamp'])
+    df.index.name = 'date'
+    df.drop(['timestamp', 'time_until_update'], axis=1, inplace=True)
+    df['value'] = df['value'].astype(int)
+    df.index = df.index + timedelta(hours=9)
+
+    return df
+
+def kijun_sen(df, k=26):
+    period_high = df['high'].rolling(k).max()
+    period_min = df['low'].rolling(k).min()
+    df.loc[:, 'kijun_'+str(k)] = ((period_high + period_min) / 2)
+    return df

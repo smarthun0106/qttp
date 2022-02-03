@@ -34,7 +34,6 @@ class HunDate:
         plus_date = plus_date.strftime('%Y-%m-%d')
         return plus_date
 
-
     def minus_hour(self, hour):
         minus_hour = self.now - timedelta(hours=hour)
         minus_hour = minus_hour.strftime('%Y-%m-%d %H:00:00')
