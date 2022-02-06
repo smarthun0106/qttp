@@ -96,9 +96,11 @@ class Candles:
                 break
 
             except UnboundLocalError:
-                day = day + 5
-                down_start = hun_date.date_plus_day(start, day)
-                print(f'{down_start} Checking.....')
+                if log:
+                    day = day + 5
+                    down_start = hun_date.date_plus_day(start, day)
+                    print(f'{down_start} Checking.....')
+                pass
 
     def candles_1h(self, start=None, end=None):
         url, path, params = self.__url_path_params("60", start, end, '1h')
