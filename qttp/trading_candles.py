@@ -35,7 +35,6 @@ class Candles:
                 file_name = self.__save_file_name(self.exchange,
                                                   start, end, option='1hour')
 
-
                 if save:
                     try:
                         result_df = pd.read_csv(file_name, index_col=0,
@@ -73,8 +72,10 @@ class Candles:
                     return result_df
 
                 else:
+
                     new_df = pd.DataFrame()
                     for start_d, end_d in zip(start_dates, end_dates):
+                        print('hi')
                         time.sleep(0.5)
 
                         df = self.candles_1h(start_d, end_d)
@@ -98,18 +99,18 @@ class Candles:
                 break
 
             except UnboundLocalError:
-                pass
                 if log:
                     day = day + 5
                     down_start = hun_date.date_plus_day(start, day)
                     print(f'{down_start} Checking.....')
+                continue
 
             except KeyError:
                 if log:
                     day = day + 5
                     down_start = hun_date.date_plus_day(start, day)
                     print(f'{down_start} Checking.....')
-                pass
+                continue
 
 
     def candles_1h(self, start=None, end=None):
