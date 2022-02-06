@@ -18,7 +18,8 @@ logger = setup_custom_logger("Candles")
 hun_date = HunDate()
 
 class Candles:
-    def candles_start_end(self, start, end, span='24h', base='9h', save=True):
+    def candles_start_end(self, start, end, span='24h', base='9h',
+                          save=True, log=True):
         down_start = hun_date.date_minus_day(start, 5)
         down_end   = hun_date.date_plus_day(end, 10)
         count_limit = self.__count_limit()
@@ -46,12 +47,12 @@ class Candles:
 
                                 df = self.candles_1h(start_d, end_d)
                                 new_df = pd.concat([new_df, df])
-
-                                log_text = (
-                                    f"Getting {self.exchange} Candles, "
-                                    f"{start_d} ~ {end_d} Done"
-                                )
-                                logger.info(log_text)
+                                if log:
+                                    log_text = (
+                                        f"Getting {self.exchange} Candles, "
+                                        f"{start_d} ~ {end_d} Done"
+                                    )
+                                    logger.info(log_text)
 
 
                             new_df.to_csv(file_name, index=True)
@@ -76,12 +77,12 @@ class Candles:
 
                         df = self.candles_1h(start_d, end_d)
                         new_df = pd.concat([new_df, df])
-
-                        log_text = (
-                            f"Getting {self.exchange} Candles, "
-                            f"{start_d} ~ {end_d} Done"
-                        )
-                        logger.info(log_text)
+                        if log:
+                            log_text = (
+                                f"Getting {self.exchange} Candles, "
+                                f"{start_d} ~ {end_d} Done"
+                            )
+                            logger.info(log_text)
 
                     result_df = time_span(new_df, span=span, base=base)
                     result_df = result_df.astype(float)
@@ -104,8 +105,6 @@ class Candles:
         page_json = requests.get(url + path, params=params).json()
         df = self.__dataframe_convert(page_json)
         df = self.preprocessing(df)
-
-
         return df
 
     def candles_24h(self):

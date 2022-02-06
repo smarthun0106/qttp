@@ -29,11 +29,3 @@ class Dropbox:
             path=path,
             mode=dropbox.files.WriteMode.overwrite
         )
-
-# token = 'lIgpKvzLKUoAAAAAAAAAAa4xVvjumDPWWL6Gz3k6nUlKB3l8ArY3TsDHuAPNhQm4'
-# box = Dropbox(token)
-#
-# file_path = '/other/'
-# file_name = f'moon_phase_with_no_emoji.csv'
-#
-# print(box.read_csv(file_path + file_name).index)

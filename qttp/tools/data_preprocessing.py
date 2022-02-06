@@ -7,18 +7,26 @@ def read_csv(csv_path):
     return df
 
 def shift_data(df, feature_names, days, type):
-    days = days+1
-    for feature_name in feature_names:
-        if type == 'before':
-            for day in range(1, days):
-                new_feature_name = feature_name + '-' + str(day)
-                df.loc[:, new_feature_name] = df[feature_name].shift(day)
-        if type == 'after':
-            for day in range(1, days):
-                new_feature_name = feature_name + '+' + str(day)
-                df.loc[:, new_feature_name] = df[feature_name].shift(-day)
-    df.dropna(inplace=True)
-    return df
+    turn = False
+    if isinstance(feature_names, list):
+        turn = True
+
+    else:
+        raise Exception("please confirm list type")
+
+    if turn:
+        days = days+1
+        for feature_name in feature_names:
+            if type == 'before':
+                for day in range(1, days):
+                    new_feature_name = feature_name + '-' + str(day)
+                    df.loc[:, new_feature_name] = df[feature_name].shift(day)
+            if type == 'after':
+                for day in range(1, days):
+                    new_feature_name = feature_name + '+' + str(day)
+                    df.loc[:, new_feature_name] = df[feature_name].shift(-day)
+        df.dropna(inplace=True)
+        return df
 
 def ratio_close_ma(df, ma):
     ma_name = 'ma' + str(ma)
