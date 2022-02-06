@@ -72,10 +72,8 @@ class Candles:
                     return result_df
 
                 else:
-
                     new_df = pd.DataFrame()
                     for start_d, end_d in zip(start_dates, end_dates):
-                        print('hi')
                         time.sleep(0.5)
 
                         df = self.candles_1h(start_d, end_d)
