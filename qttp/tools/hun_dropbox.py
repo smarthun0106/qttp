@@ -21,6 +21,6 @@ class HunDropbox:
         db_bytes = bytes(df_string, 'utf8')
         self.dbx.files_upload(
             f=db_bytes,
-            path=path,
+            path=path + csv_name,
             mode=dropbox.files.WriteMode.overwrite
         )
