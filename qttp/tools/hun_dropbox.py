@@ -1,5 +1,8 @@
 import dropbox
 import pandas as pd
+import pickle
+import io
+import json
 
 class HunDropbox:
     def __init__(self, token):
@@ -29,3 +32,21 @@ class HunDropbox:
             path=path + csv_name,
             mode=dropbox.files.WriteMode.overwrite
         )
+
+    def save_json(self, path, name, data):
+        # https://villoro.com/post/dropbox_python 참고
+        with io.StringIO() as stream:
+            json.dump(data, stream, indent=4)
+            stream.seek(0)
+            self.dbx.files_upload(
+                f    = stream.read().encode(),
+                path = path+name,
+                mode =dropbox.files.WriteMode.overwrite
+            )
+
+    def read_json(self, path, file_name):
+        # https://villoro.com/post/dropbox_python 참고
+        _, res = self.dbx.files_download(path+file_name)
+        with io.BytesIO(res.content) as stream:
+            data = json.load(stream)
+        return data
