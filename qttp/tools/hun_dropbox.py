@@ -36,7 +36,7 @@ class HunDropbox:
     def save_json(self, path, name, data):
         # https://villoro.com/post/dropbox_python 참고
         with io.StringIO() as stream:
-            json.dump(data, stream, indent=4)
+            json.dump(data, stream)
             stream.seek(0)
             self.dbx.files_upload(
                 f    = stream.read().encode(),
