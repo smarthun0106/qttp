@@ -3,6 +3,18 @@ import pandas as pd
 import pickle
 import io
 import json
+import numpy
+
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NpEncoder, self).default(obj)
+
 
 class HunDropbox:
     def __init__(self, token):
@@ -36,7 +48,7 @@ class HunDropbox:
     def save_json(self, path, name, data):
         # https://villoro.com/post/dropbox_python 참고
         with io.StringIO() as stream:
-            json.dump(data, stream)
+            json.dump(data, stream, cls=NpEncoder)
             stream.seek(0)
             self.dbx.files_upload(
                 f    = stream.read().encode(),
