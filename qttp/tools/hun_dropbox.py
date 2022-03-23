@@ -10,6 +10,11 @@ class HunDropbox:
         files_name = [content.name for content in contents.entries]
         return files_name
 
+    def read_csv_without_index(self, path, csv_name):
+        downfile, f = self.dbx.files_download(path+csv_name)
+        df = pd.read_csv(f.raw)
+        return df
+
     def read_csv(self, path, csv_name):
         downfile, f = self.dbx.files_download(path+csv_name)
         df = pd.read_csv(f.raw, index_col=['date'])
