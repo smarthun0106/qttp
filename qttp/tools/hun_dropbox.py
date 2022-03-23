@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 import io
 import json
-import numpy
+import numpy as np
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
